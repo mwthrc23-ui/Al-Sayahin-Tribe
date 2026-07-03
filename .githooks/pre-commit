@@ -1,0 +1,91 @@
+#!/usr/bin/env node
+
+/**
+ * Git Pre-Commit Hook for Caveman Code Review
+ * يفحص الكود قبل الالتزام باستخدام Caveman
+ */
+
+const { execSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
+// Colors
+const colors = {
+  reset: '\x1b[0m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+};
+
+function log(color, message) {
+  console.log(`${colors[color]}${message}${colors.reset}`);
+}
+
+async function runPreCommitChecks() {
+  log('blue', '🦅 Caveman Code Pre-Commit Hook');
+  log('blue', '================================\n');
+
+  try {
+    // Get staged files
+    const stagedFiles = execSync('git diff --cached --name-only')
+      .toString()
+      .split('\n')
+      .filter(f => f && (f.endsWith('.ts') || f.endsWith('.tsx')));
+
+    if (stagedFiles.length === 0) {
+      log('yellow', '⚠️  No TypeScript files staged');
+      process.exit(0);
+    }
+
+    log('blue', `📋 Found ${stagedFiles.length} TypeScript files to check\n`);
+
+    // Check each file
+    let hasErrors = false;
+    for (const file of stagedFiles) {
+      log('blue', `\n🔍 Checking: ${file}`);
+
+      // Check for security issues
+      try {
+        const content = fs.readFileSync(file, 'utf-8');
+
+        // Security checks
+        if (content.includes('dangerouslySetInnerHTML')) {
+          log('red', '  ❌ Found dangerouslySetInnerHTML - potential XSS vulnerability');
+          hasErrors = true;
+        }
+
+        // Performance checks
+        if (content.match(/\.map\s*\(/g) && !content.includes('key=')) {
+          log('yellow', '  ⚠️  List rendering without keys detected');
+        }
+
+        // Best practice checks
+        if (content.includes('console.log')) {
+          log('yellow', '  ⚠️  Console.log found - consider removing');
+        }
+
+        if (!hasErrors) {
+          log('green', '  ✅ Passed security check');
+        }
+      } catch (error) {
+        log('red', `  ❌ Error reading file: ${error.message}`);
+        hasErrors = true;
+      }
+    }
+
+    if (hasErrors) {
+      log('red', '\n❌ Pre-commit checks failed');
+      process.exit(1);
+    } else {
+      log('green', '\n✅ All pre-commit checks passed!');
+      log('blue', '🚀 Ready to commit\n');
+      process.exit(0);
+    }
+  } catch (error) {
+    log('red', `❌ Error: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+runPreCommitChecks();
