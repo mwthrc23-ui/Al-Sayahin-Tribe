@@ -1,0 +1,74 @@
+{
+  "name": "caveman-code-examples",
+  "description": "أمثلة استخدام Caveman Code مع مشروع Al-Sayahin Tribe",
+  "examples": {
+    "basicReview": {
+      "command": "caveman 'review the component code'",
+      "description": "مراجعة أساسية للكود",
+      "output": "تقرير مختصر مع النقاط الرئيسية"
+    },
+    "performanceAnalysis": {
+      "command": "caveman perf src/components/Hero.tsx",
+      "description": "تحليل أداء المكون",
+      "output": "نقاط الأداء والاقتراحات"
+    },
+    "securityCheck": {
+      "command": "caveman security src/",
+      "description": "فحص شامل للأمان",
+      "output": "قائمة بالمشاكل الأمنية المحتملة"
+    },
+    "documentation": {
+      "command": "caveman document src/components/Button.tsx",
+      "description": "توليد التوثيق التلقائي",
+      "output": "JSDoc و تعليقات مفصلة"
+    },
+    "codeOptimization": {
+      "command": "caveman optimize src/hooks/useScrollState.ts",
+      "description": "اقتراحات التحسين",
+      "output": "قائمة بالتحسينات المقترحة"
+    },
+    "pipelineUsage": {
+      "command": "git diff | caveman -p 'review these changes'",
+      "description": "مراجعة التغييرات الحديثة",
+      "output": "تقرير عن التغييرات"
+    },
+    "interactiveMode": {
+      "command": "caveman interactive",
+      "description": "الوضع التفاعلي الكامل",
+      "output": "واجهة تفاعلية للعمل مع الكود"
+    }
+  },
+  "workflows": {
+    "dailyCodeReview": {
+      "steps": [
+        "npm run caveman:review",
+        "npm run caveman:optimize",
+        "caveman security src/"
+      ],
+      "description": "مراجعة يومية شاملة"
+    },
+    "preCommit": {
+      "steps": [
+        "git diff | caveman -p 'check for issues'",
+        "caveman security src/ --quick"
+      ],
+      "description": "فحص قبل الالتزام"
+    },
+    "preRelease": {
+      "steps": [
+        "caveman perf src/ --detailed",
+        "caveman security src/ --comprehensive",
+        "caveman document src/components/"
+      ],
+      "description": "فحص شامل قبل الإصدار"
+    }
+  },
+  "bestPractices": [
+    "استخدم الوضع المضغوط للسرعة الأفضل",
+    "راجع الكود قبل الالتزام",
+    "فحص الأمان بانتظام",
+    "حدّث التوثيق تلقائياً",
+    "راقب الأداء باستمرار",
+    "استخدم في CI/CD pipeline"
+  ]
+}
